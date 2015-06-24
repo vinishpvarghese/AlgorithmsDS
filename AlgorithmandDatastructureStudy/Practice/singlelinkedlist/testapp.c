@@ -11,6 +11,9 @@ int main()
      int numNodes = 0;
      int nodeVal = 0;
      int nodePos = 0;
+     int len = 0;
+     bool status = false;
+     int num =0;
      myList * mList = NULL;
 
      while(!exit)
@@ -22,6 +25,9 @@ int main()
 	     printf("3.Insert Node\n");
 	     printf("4.Insert Node @ \n");
 	     printf("5.Reverse List \n");
+	     printf("6.Get length of List \n");
+	     printf("7.Find the num in List \n");
+	     printf("8.Delete Node @ \n");
 	     printf("0.Exit\n");
 
 	     scanf("%d",&op);
@@ -52,6 +58,21 @@ int main()
 			     break;
 		     case 5:
 			     mList = reverseList(mList);
+			     break;
+		     case 6:
+			     len = getListLength(mList);
+			     printf("ListLength = %d\n",len);
+			     break;
+		     case 7:
+			     printf("Enter the number to find in List\n");
+			     scanf("%d",&num);
+			     status = findNumList(mList,num);
+			     (status)?printf("Num Found\n"):printf("Num Not found\n");
+			     break;
+		     case 8:
+			     printf("Enter node position to delete\n");
+			     scanf("%d",&nodePos);
+			     mList = deleteNode(mList,nodePos);
 			     break;
 		     default:
 			     printf("Invalid Option\n");

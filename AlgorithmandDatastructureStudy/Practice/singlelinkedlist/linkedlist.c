@@ -122,9 +122,137 @@ myList * insertValAt(myList * mList,int nodeVal,int nodePos)
 myList * reverseList(myList * mList)
 {
 
+    myList * curr = mList;
+    myList * next = NULL;
+    myList * prev = NULL;
 
+    if(NULL == mList ) return NULL ;
+
+    while(NULL != curr)
+    {
+        next = curr->next;
+	curr->next = prev;
+	prev = curr;
+	curr = next;
+    }
+    mList = prev ;
     return mList;
+
+/*
+//recurrsive impl
+    myList * first = NULL;
+    myList * rest = NULL;
+
+    PRINT("calling reverse\n");
+    if(NULL == mList) return NULL;
+
+    first = mList;
+    rest = first->next;
+
+    if(NULL == rest) return NULL;
+
+    rest = reverseList(rest);
+
+    first->next->next = first;
+    first->next = NULL;
+
+//    mList = rest;
+
+    return rest;
+*/
 
 }
 
+int getListLength(myList * mList)
+{
 
+	int len = 0;
+        if(NULL == mList) return 0;
+	while(mList)
+	{
+	    mList = mList->next;
+	    len++;
+	}
+
+	return len;
+
+	/*
+        if(NULL == mList) 
+	{
+		return 0;
+	}
+	else
+	{
+	    return(1+getListLength(mList->next));
+	}
+	*/
+}
+
+bool findNumList(myList * mList,int num)
+{
+/*
+     if(mList == NULL)
+     {
+          printf("Invalid List \n");
+	  return false;
+     }
+
+     while(mList)
+     {
+         if(num == mList->val)
+	 {
+	     return true;
+	 }
+	 mList = mList->next;
+     }
+     return false;
+ */
+     if(mList == NULL)
+     {
+           return false;
+     }
+     if(num != mList->val)
+     {
+          findNumList(mList->next,num);
+     }
+     else
+     {
+          return true;
+     }
+     
+}
+
+myList * deleteNode(myList * mList,int nodePos)
+{
+	myList * head = mList;
+	myList * temp = mList;
+	myList * prev = NULL;
+	int index = 0;
+	if(NULL == mList) return NULL;
+	
+	while(temp  && index != nodePos)
+	{
+		PRINT("index %d\n",index);
+		index++;
+		prev = temp;
+		temp = temp->next;
+	}
+	if(index == nodePos)
+	{
+		PRINT("free List[%d]:%d\n",index,temp->val);
+		if(0 == nodePos)
+		{
+			head = temp->next;    
+			free(temp);
+		}
+		else
+		{
+			prev->next = temp->next;
+			free(temp);
+		}
+	}
+
+
+
+	return head;
+}
