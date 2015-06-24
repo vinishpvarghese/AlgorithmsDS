@@ -18,6 +18,7 @@ void printInOrderTree(myTreeNode *);
 void printPreOrderTree(myTreeNode *);
 void printPostOrderTree(myTreeNode *);
 int getTreeSize(myTreeNode *);
+int getTreeHeight(myTreeNode *);
 
 
 #endif /*__LINLKEDLIST_H*/

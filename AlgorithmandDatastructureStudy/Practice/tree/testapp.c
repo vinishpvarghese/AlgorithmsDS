@@ -18,6 +18,7 @@ int main()
 	     printf("1.Craete Tree\n");
 	     printf("2.Print Tree\n");
 	     printf("3.Size of Tree\n");
+	     printf("4.Height of Tree\n");
 	     printf("0.Exit\n");
 
 	     scanf("%d",&op);
@@ -43,6 +44,7 @@ int main()
 			     printf("Tree Size = %d\n",getTreeSize(myTree));
 			     break;
 		     case 4:
+			     printf("Tree Height = %d\n",getTreeHeight(myTree));
 			     break;
 		     case 5:
 			     break;

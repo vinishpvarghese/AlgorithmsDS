@@ -61,3 +61,14 @@ int getTreeSize(myTreeNode * myTree)
     return 1 + getTreeSize(myTree->left) + getTreeSize(myTree->right);
 
 }
+int getTreeHeight(myTreeNode * myTree)
+{
+     int lHeight = 0;
+     int rHeight = 0;
+     if(NULL == myTree) return 0;
+     
+     lHeight = getTreeHeight(myTree->left);
+     rHeight = getTreeHeight(myTree->right);
+
+     return (lHeight > rHeight)?lHeight+1 : rHeight+1;
+}
