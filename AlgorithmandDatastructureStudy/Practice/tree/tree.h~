@@ -19,8 +19,6 @@ void printPreOrderTree(myTreeNode *);
 void printPostOrderTree(myTreeNode *);
 void printGivenLevel(myTreeNode *,int);
 void printLevelOrderTree(myTreeNode *);
-void printGivenLevelReverse(myTreeNode *,int);
-void printLevelOrderTreeReverse(myTreeNode *);
 int getTreeSize(myTreeNode *);
 int getTreeHeight(myTreeNode *);
 

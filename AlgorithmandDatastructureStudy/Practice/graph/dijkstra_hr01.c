@@ -1,0 +1,345 @@
+#include<stdio.h>
+#include<stdlib.h>
+#include<limits.h>
+
+//#include "graph.h"
+
+#define PRINT printf
+typedef struct graphNode{
+
+	int src;
+	int dest;
+	int weight;
+	struct graphNode * next;
+}graphNode;
+
+
+typedef struct graphArrayList{
+
+	graphNode * head;
+
+}gArrayList;
+
+typedef struct graph{
+
+	int num ;
+	gArrayList * myArrayList;
+
+}graph;
+
+
+graph * createGraph(int num);
+void addVertices(graph * gr ,int src,int dest,int dir,int weight);
+void printGraph(graph * gr);
+
+
+graph * createGraph(int num)
+{
+	int i = 0;
+	graph * myGraph = (graph *)malloc(sizeof(graph));
+
+	myGraph->num = num;
+
+	myGraph->myArrayList = (gArrayList *)malloc(num * sizeof(gArrayList));
+
+	for(i= 0; i< num ; i++)
+	{
+		myGraph->myArrayList[i].head = NULL;
+	}
+
+	return myGraph;
+}
+
+void addVertices(graph * gr ,int src,int dest,int dir,int weight)
+{
+
+	graphNode * gNode = NULL;
+	graphNode * gNode1 = NULL;
+	graphNode * temp = NULL;
+	int flag = 0;
+	if(NULL == gr)
+	{
+		gr = createGraph(10);
+
+	}
+
+	temp =  gr->myArrayList[src].head ;
+
+	while(temp)
+	{
+		if(dest == temp->dest)
+		{
+			if(weight <= temp->weight )
+			        temp->weight = weight;
+			flag = 1;
+			if(!dir)
+			{
+
+				temp =  gr->myArrayList[dest].head ;
+				while(temp)
+				{
+					if(src == temp->dest)
+					{
+						if(weight <= temp->weight )
+							temp->weight = weight;
+						flag = 1;
+						break;
+					}
+					temp = temp->next;
+				}
+
+			}
+			break;
+		}
+		temp = temp->next;
+	}
+	if(!flag)
+	{
+		gNode = (graphNode*)malloc(sizeof(graphNode));
+
+		gNode->src = src;
+		gNode->dest = dest;
+		gNode->weight = weight;
+		gNode->next =  gr->myArrayList[src].head ;
+
+		gr->myArrayList[src].head  = gNode;
+
+		if(!dir)
+		{
+			gNode1 =  (graphNode*)malloc(sizeof(graphNode));
+
+			gNode1->src = dest;
+			gNode1->dest = src;
+			gNode1->weight = weight;
+			gNode1->next =  gr->myArrayList[dest].head ;
+			gr->myArrayList[dest].head  = gNode1;
+		}
+	}
+}
+
+void printGraph(graph * gr)
+{
+
+	int i = 0;
+	graphNode * gNode = NULL;
+
+	for(i = 0 ;i < gr->num ; i++)
+	{
+		gNode = gr->myArrayList[i].head;
+		while(gNode)
+		{
+			printf("Vertices(%d,%d) with weight %d \n ",i,gNode->dest,gNode->weight );
+			gNode = gNode->next;
+
+		}       
+
+	}
+}
+
+
+void doDFS(graph * gr,int origin,int * arr)
+{
+
+	graphNode * gNode = gr->myArrayList[origin].head;
+	arr[origin] = 1;
+	printf("Visited Node %d\n",origin);
+	while(gNode)
+	{
+		if(arr[gNode->dest] == 0)
+		{
+			doDFS(gr,gNode->dest,arr);
+		}
+		gNode = gNode->next;
+	}
+
+}
+
+void graphDFS(graph * gr,int origin)
+{
+
+	if(NULL == gr)
+		return;
+
+	int * arr = (int*)calloc(gr->num,sizeof(int));
+	doDFS(gr,origin,arr);
+
+}
+
+unsigned int mindistance(unsigned int * set,unsigned int * dist,int num)
+{
+	unsigned int i = 0;
+	unsigned int min = INT_MAX;
+	unsigned int min_idx = num;
+	for(i=0;i < num;i++)
+	{
+		if((!set[i]) && dist[i] < min)
+		{
+			min = dist[i];
+			min_idx = i;
+		}
+	}
+	PRINT("min idx dist[%d] = %u\n",min_idx,dist[min_idx]);
+	return min_idx;
+
+}
+void printDistance(unsigned int * dist,int num)
+{
+	unsigned int i =0;
+	for(i=0;i<num;i++)
+	{
+		printf("dist[%d] = %d\n",i,dist[i]);
+
+	}
+
+}
+void printDistance_ex(unsigned int * dist,int num,int start)
+{
+	unsigned int i =0;
+	for(i=0;i<num;i++)
+	{
+		if(start != i)
+		printf("%d ",dist[i]);
+	}
+
+	printf("\n");
+}
+
+
+void updateDistance(unsigned int * set ,unsigned int * dist,unsigned int num)
+{
+	unsigned int i =0;
+	for(i=0;i<num;i++)
+	{
+		if(!set[i])
+		{
+		    dist[i] = -1;
+		}
+	}
+
+}
+
+void dijkstra_algo(graph * gr,int min,unsigned int * set,unsigned int *dist)
+{
+	int dest = 0;
+	int weight = 0;
+
+	unsigned int min_val = INT_MAX;
+	unsigned int min_dest = INT_MAX;
+
+	unsigned int min_idx = 0;
+	set[min] = 1;
+
+
+
+	graphNode * gn = gr->myArrayList[min].head;
+
+	while(gn)
+	{
+
+		dest = gn->dest;
+		if(!set[dest])
+		{
+			weight = gn->weight;
+			if(dist[dest] >= (dist[min]+weight) )
+			{
+				dist[dest] = dist[min] + weight;
+				if(min_val  > dist[dest])
+				{
+					min_val = dist[dest];
+					min_dest = dest;
+				}
+				PRINT("dist[%d](%u) = dist[%d](%u) + %d \n",dest,dist[dest],min,dist[min],weight);
+			}
+		}
+		gn = gn->next;
+	}
+
+	PRINT("PATH %d -->\n",min_dest);
+	min_idx = mindistance(set,dist,gr->num);
+	if((min_idx != gr->num) && (min != min_idx) )
+	{
+		dijkstra_algo(gr,min_idx,set,dist);
+	}
+}
+void dijkstra(graph * gr)
+{
+	int min = 0;
+	unsigned int * set = (unsigned int *)malloc(gr->num * sizeof(int));
+	unsigned int * dist = (unsigned int *)malloc(gr->num * sizeof(int));
+	memset(set,0,gr->num);
+	memset(dist,INT_MAX,gr->num*sizeof(int));
+	printDistance(dist,gr->num);
+	dist[0] = 0;
+	min = mindistance(set,dist,gr->num);
+	dijkstra_algo(gr,min,set,dist);
+
+	updateDistance(set,dist,gr->num);
+	printDistance(dist,gr->num);
+
+}
+void dijkstra_ex(graph * gr,int start)
+{
+	int min = 0;
+	unsigned int * set = (unsigned int *)malloc(gr->num * sizeof(int));
+	unsigned int * dist = (unsigned int *)malloc(gr->num * sizeof(int));
+	memset(set,0,gr->num);
+	memset(dist,INT_MAX,gr->num*sizeof(int));
+//	printDistance(dist,gr->num);
+	dist[start] = 0;
+	min = mindistance(set,dist,gr->num);
+	dijkstra_algo(gr,min,set,dist);
+
+	printDistance_ex(dist,gr->num,start);
+
+}
+
+int main()
+{
+    unsigned int T = 0;
+    unsigned int N = 0;
+    unsigned int M = 0;
+    unsigned int * S = NULL;
+    unsigned int i = 0,j=0,k=0;
+    unsigned int x = 0;
+    unsigned int y = 0;
+    unsigned int r = 0;
+
+    graph ** gr = NULL;
+
+
+    scanf("%d",&T);
+
+    gr = (graph**)malloc(T*sizeof(graph));
+    S = (unsigned int *)malloc(T*sizeof(unsigned int));
+
+    for(i = 0;i<T;i++)
+    {
+        
+        scanf("%d %d",&N,&M);
+	gr[i]=(graph*)createGraph(N);
+	for(j=0;j<M;j++)
+	{
+             scanf("%d %d %d",&x,&y,&r);
+	     addVertices(gr[i],x-1,y-1,0,r);
+	}
+    
+        scanf("%d",&S[i]);
+//	printGraph(gr[i]);
+//	dijkstra_ex(gr[i],S[i]-1);
+    
+    }
+
+
+    for(i = 0;i<T;i++)
+    {
+	dijkstra_ex(gr[i],S[i]-1);
+
+    }
+	return 0;
+}
+
+
+
+
+
+

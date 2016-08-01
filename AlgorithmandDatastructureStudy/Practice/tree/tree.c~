@@ -29,10 +29,6 @@ void printTree(myTreeNode * myTree)
      printf("Level-Order\n");
      printLevelOrderTree(myTree);
      printf("\n");
-     printf("Reverse Level-Order\n");
-     printLevelOrderTreeReverse(myTree);
-     printf("\n");
-
 
      return;
 }
